@@ -70,9 +70,9 @@ const (
 	WorkflowRunStatus_TIMEOUT  WorkflowRunStatus = "TIMEOUT"
 )
 
-type WorkflowStatus string
+type WorkflowStatus_SDK string
 
 const (
-	WorkflowStatus_DELETING WorkflowStatus = "DELETING"
-	WorkflowStatus_READY    WorkflowStatus = "READY"
+	WorkflowStatus_SDK_DELETING WorkflowStatus_SDK = "DELETING"
+	WorkflowStatus_SDK_READY    WorkflowStatus_SDK = "READY"
 )

@@ -25,3 +25,159 @@ var (
 	_ = &metav1.Time{}
 	_ = ackv1alpha1.AWSAccountID("")
 )
+
+// Specifies the Amazon S3 location of a workflow definition file. This structure
+// contains the bucket name, object key, and optional version ID for the workflow
+// definition. Amazon Managed Workflows for Apache Airflow Serverless takes
+// a snapshot of the definition file at the time of workflow creation or update,
+// ensuring that the workflow behavior remains consistent even if the source
+// file is modified. The definition must be a valid YAML file that uses supported
+// Amazon Web Services operators and Amazon Managed Workflows for Apache Airflow
+// Serverless syntax.
+type DefinitionS3Location struct {
+	Bucket *string `json:"bucket,omitempty"`
+	// Reference field for Bucket
+	BucketRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"bucketRef,omitempty"`
+	ObjectKey *string                                  `json:"objectKey,omitempty"`
+	VersionID *string                                  `json:"versionID,omitempty"`
+}
+
+// Configuration for encrypting workflow data at rest and in transit. Amazon
+// Managed Workflows for Apache Airflow Serverless provides comprehensive encryption
+// capabilities to protect sensitive workflow data, parameters, and execution
+// logs. When using customer-managed keys, the service integrates with Amazon
+// Web Services KMS to provide fine-grained access control and audit capabilities.
+// Encryption is applied consistently across the distributed execution environment
+// including task containers, metadata storage, and log streams.
+type EncryptionConfiguration struct {
+	KMSKeyID *string `json:"kmsKeyID,omitempty"`
+	// Reference field for KMSKeyID
+	KMSKeyRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"kmsKeyRef,omitempty"`
+	Type      *string                                  `json:"type,omitempty"`
+}
+
+// Configuration for workflow logging that specifies where you should store
+// your workflow execution logs. Amazon Managed Workflows for Apache Airflow
+// Serverless provides comprehensive logging capabilities that capture workflow
+// execution details, task-level information, and system events. Logs are automatically
+// exported to your specified CloudWatch log group using remote logging functionality,
+// providing centralized observability across the distributed, multi-tenant
+// execution environment. This enables effective debugging, monitoring, and
+// compliance auditing of workflow executions.
+type LoggingConfiguration struct {
+	LogGroupName *string `json:"logGroupName,omitempty"`
+}
+
+// Network configuration for workflow execution. Specifies VPC security groups
+// and subnets for secure network access. When provided, Amazon Managed Workflows
+// for Apache Airflow Serverless deploys ECS worker tasks in your specified
+// VPC configuration, enabling secure access to VPC-only resources. The service
+// uses a proxy API container architecture where one container handles external
+// communication while the worker container connects to your VPC for task execution.
+// This design provides both security isolation and connectivity flexibility.
+type NetworkConfiguration struct {
+	SecurityGroupIDs []*string `json:"securityGroupIDs,omitempty"`
+	// Reference field for SecurityGroupIDs
+	SecurityGroupRefs []*ackv1alpha1.AWSResourceReferenceWrapper `json:"securityGroupRefs,omitempty"`
+	SubnetIDs         []*string                                  `json:"subnetIDs,omitempty"`
+	// Reference field for SubnetIDs
+	SubnetRefs []*ackv1alpha1.AWSResourceReferenceWrapper `json:"subnetRefs,omitempty"`
+}
+
+// Summary information about a workflow run's execution details, including status
+// and timing information.
+type RunDetailSummary struct {
+	CreatedOn *metav1.Time `json:"createdOn,omitempty"`
+	EndedAt   *metav1.Time `json:"endedAt,omitempty"`
+	StartedAt *metav1.Time `json:"startedAt,omitempty"`
+}
+
+// The configuration to use to schedule automated workflow execution using cron
+// expressions. Amazon Managed Workflows for Apache Airflow Serverless integrates
+// with EventBridge Scheduler to provide cost-effective, timezone-aware scheduling
+// capabilities. The service supports both time-based and event-based scheduling
+// (event-based scheduling available post-GA). When a workflow definition includes
+// scheduling information, Amazon Managed Workflows for Apache Airflow Serverless
+// automatically configures the appropriate triggers and ensures only one version
+// of a workflow has an active schedule at any time.
+type ScheduleConfiguration struct {
+	CronExpression *string `json:"cronExpression,omitempty"`
+}
+
+// Summary information about a task instance within a workflow run, including
+// its status and execution details.
+type TaskInstanceSummary struct {
+	DurationInSeconds *int64  `json:"durationInSeconds,omitempty"`
+	OperatorName      *string `json:"operatorName,omitempty"`
+	WorkflowARN       *string `json:"workflowARN,omitempty"`
+}
+
+// Contains information about a field that failed validation, including the
+// field name and a descriptive error message.
+type ValidationExceptionField struct {
+	Name *string `json:"name,omitempty"`
+}
+
+// Detailed information about a workflow run execution, including timing, status,
+// error information, and associated task instances. This structure provides
+// comprehensive visibility into the workflow execution lifecycle within the
+// Amazon Managed Workflows for Apache Airflow Serverless serverless environment.
+// The service tracks execution across distributed ECS worker tasks and provides
+// detailed timing information, error diagnostics, and task instance relationships
+// to support effective monitoring and troubleshooting of complex workflow executions.
+type WorkflowRunDetail struct {
+	CompletedOn  *metav1.Time `json:"completedOn,omitempty"`
+	CreatedAt    *metav1.Time `json:"createdAt,omitempty"`
+	Duration     *int64       `json:"duration,omitempty"`
+	ErrorMessage *string      `json:"errorMessage,omitempty"`
+	ModifiedAt   *metav1.Time `json:"modifiedAt,omitempty"`
+	StartedOn    *metav1.Time `json:"startedOn,omitempty"`
+	WorkflowARN  *string      `json:"workflowARN,omitempty"`
+}
+
+// Summary information about a workflow run, including basic identification
+// and status information.
+type WorkflowRunSummary struct {
+	WorkflowARN *string `json:"workflowARN,omitempty"`
+}
+
+// Summary information about a workflow, including basic identification and
+// metadata.
+type WorkflowSummary struct {
+	CreatedAt       *metav1.Time `json:"createdAt,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	ModifiedAt      *metav1.Time `json:"modifiedAt,omitempty"`
+	Name            *string      `json:"name,omitempty"`
+	TriggerMode     *string      `json:"triggerMode,omitempty"`
+	WorkflowARN     *string      `json:"workflowARN,omitempty"`
+	WorkflowStatus  *string      `json:"workflowStatus,omitempty"`
+	WorkflowVersion *string      `json:"workflowVersion,omitempty"`
+}
+
+// Summary information about a workflow version, including identification and
+// configuration details.
+type WorkflowVersionSummary struct {
+	CreatedAt *metav1.Time `json:"createdAt,omitempty"`
+	// Specifies the Amazon S3 location of a workflow definition file. This structure
+	// contains the bucket name, object key, and optional version ID for the workflow
+	// definition. Amazon Managed Workflows for Apache Airflow Serverless takes
+	// a snapshot of the definition file at the time of workflow creation or update,
+	// ensuring that the workflow behavior remains consistent even if the source
+	// file is modified. The definition must be a valid YAML file that uses supported
+	// Amazon Web Services operators and Amazon Managed Workflows for Apache Airflow
+	// Serverless syntax.
+	DefinitionS3Location *DefinitionS3Location `json:"definitionS3Location,omitempty"`
+	ModifiedAt           *metav1.Time          `json:"modifiedAt,omitempty"`
+	// The configuration to use to schedule automated workflow execution using cron
+	// expressions. Amazon Managed Workflows for Apache Airflow Serverless integrates
+	// with EventBridge Scheduler to provide cost-effective, timezone-aware scheduling
+	// capabilities. The service supports both time-based and event-based scheduling
+	// (event-based scheduling available post-GA). When a workflow definition includes
+	// scheduling information, Amazon Managed Workflows for Apache Airflow Serverless
+	// automatically configures the appropriate triggers and ensures only one version
+	// of a workflow has an active schedule at any time.
+	ScheduleConfiguration *ScheduleConfiguration `json:"scheduleConfiguration,omitempty"`
+	TriggerMode           *string                `json:"triggerMode,omitempty"`
+	WorkflowARN           *string                `json:"workflowARN,omitempty"`
+	WorkflowVersion       *string                `json:"workflowVersion,omitempty"`
+}

@@ -1,0 +1,13 @@
+apiVersion: mwaaserverless.services.k8s.aws/v1alpha1
+kind: Workflow
+metadata:
+  name: $WORKFLOW_NAME
+spec:
+  name: $WORKFLOW_NAME
+  roleARN: $EXECUTION_ROLE_ARN
+  definitionS3Location:
+    bucket: $DEFINITION_BUCKET
+    objectKey: $DEFINITION_OBJECT_KEY
+  description: ACK e2e test workflow
+  # "scheduled" would need a schedule expression, which the spec can't set.
+  triggerMode: manual_only

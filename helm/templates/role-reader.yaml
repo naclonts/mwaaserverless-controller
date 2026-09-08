@@ -16,6 +16,7 @@ rules:
 - apiGroups:
   - mwaaserverless.services.k8s.aws
   resources:
+  - workflows
   verbs:
   - get
   - list

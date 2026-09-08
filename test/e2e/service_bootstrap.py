@@ -37,29 +37,20 @@ from e2e.bootstrap_resources import BootstrapResources
 # S3 object key under which the workflow definition YAML is uploaded.
 DEFINITION_OBJECT_KEY = "workflows/example.yaml"
 
-# Minimal MWAA Serverless workflow definition (a YAML DAG).
+# Minimal MWAA Serverless workflow definition (a dag-factory-style YAML DAG).
 #
-# GUESS / VERIFY: The exact schema MWAA Serverless expects for the definition
-# body is not yet pinned down from the public docs. MWAA Serverless workflow
-# definitions are YAML DAGs (NOT Python) that describe tasks/operators and
-# their dependencies. The body below is a documented-minimal example shaped
-# like an Airflow-style YAML DAG; it MUST be reconciled with the real MWAA
-# Serverless definition schema during the first real e2e run, or CreateWorkflow
-# may reject it with a ValidationException.
+# MWAA Serverless workflow definitions are YAML DAGs (NOT Python) in the
+# dag-factory format: a top-level <dag_id> key mapping to a `tasks` mapping
+# (task name -> operator/dependencies). This body was validated against the
+# live MWAA Serverless CreateWorkflow API.
 WORKFLOW_DEFINITION_BODY = """\
-# Minimal MWAA Serverless workflow definition (YAML DAG).
-# VERIFY this matches the MWAA Serverless definition schema on first real run.
-dag:
-  dag_id: ack_example_workflow
-  schedule: null
+ack_example_workflow:
+  default_args: { owner: airflow }
+  schedule_interval: null
   catchup: false
   tasks:
-    - task_id: start
-      operator: airflow.operators.empty.EmptyOperator
-    - task_id: finish
-      operator: airflow.operators.empty.EmptyOperator
-      dependencies:
-        - start
+    start:  { operator: airflow.operators.empty.EmptyOperator }
+    finish: { operator: airflow.operators.empty.EmptyOperator, dependencies: [start] }
 """
 
 
